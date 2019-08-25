@@ -10,15 +10,15 @@
         <job>
             <name>DWJob</name>
             <group>fetsGroup</group>
-            <job-class>com.fets.fetsLogger.jobSchedule.DWJob</job-class>
+            <job-class>com.fets.ibedc.dw.jobSchedule.DWJob</job-class>
         </job>
         <trigger>
             <cron>
                 <name>DWJob</name>
                 <job-name>DWJob</job-name>
                 <job-group>fetsGroup</job-group>
-                <cron-expression>0 00 21 1/1 * ? *</cron-expression>
-            </cron>
+                <cron-expression>0 0/5 * * * ?</cron-expression>
+            </cron> 
         </trigger>
     </schedule>
     

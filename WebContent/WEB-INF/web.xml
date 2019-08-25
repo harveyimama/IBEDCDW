@@ -1,35 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
   <display-name>Logger</display-name>
-  <context-param>
-    <param-name>quartz:config-file</param-name>
-    <param-value>C:/apache-tomcat-7.0.52/webapps/IBEDCDW/WEB-INF/quartz.properties</param-value>
-  </context-param>
-  <context-param>
-    <param-name>quartz:shutdown-on-unload</param-name>
-    <param-value>true</param-value>
-  </context-param>
-  <context-param>
-    <param-name>quartz:wait-on-shutdown</param-name>
-    <param-value>false</param-value>
-  </context-param>
-  <context-param>
-    <param-name>quartz:start-scheduler-on-load</param-name>
-    <param-value>true</param-value>
-  </context-param>
   
-    <listener>
-    <listener-class>
-	org.quartz.ee.servlet.QuartzInitializerListener
-  </listener-class>
-  </listener>
+   <servlet>
+    <servlet-name>QuartzInitializer</servlet-name>
+    <servlet-class>
+             org.quartz.ee.servlet.QuartzInitializerServlet
+         </servlet-class>
+    <init-param>
+      <param-name>config-file</param-name>
+      <param-value>C:\apache-tomcat-7.0.52\webapps\IBEDCDW\WEB-INF\quartz.properties</param-value>
+    </init-param>
+    <init-param>
+      <param-name>shutdown-on-unload</param-name>
+      <param-value>true</param-value>
+    </init-param>
+    <init-param>
+      <param-name>wait-on-shutdown</param-name>
+      <param-value>true</param-value>
+    </init-param>
+    <init-param>
+      <param-name>start-scheduler-on-load</param-name>
+      <param-value>true</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+     
+ 
     
   <servlet>
     <servlet-name>Jersey REST Service</servlet-name>
     <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
     <init-param>
       <param-name>com.sun.jersey.config.property.packages</param-name>
-      <param-value>com.fets.ibedc.d.jersey.services</param-value>
+      <param-value>com.fets.ibedc.dw.jersey.services</param-value>
     </init-param>
     <init-param>
       <param-name>com.sun.jersey.api.json.POJOMappingFeature</param-name>
@@ -38,12 +42,33 @@
     <load-on-startup>1</load-on-startup>
   </servlet>
   
-     <servlet-mapping>
+  <servlet>
+    <servlet-name>DW Soap</servlet-name>
+    <servlet-class>
+	        com.sun.xml.ws.transport.http.servlet.WSServlet
+	    </servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  
+   <servlet-mapping>
     <servlet-name>Jersey REST Service</servlet-name>
     <url-pattern>/rest/*</url-pattern>
   </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>DW Soap</servlet-name>
+    <url-pattern>/DWService</url-pattern>
+  </servlet-mapping>
 
-    
+    <listener>
+    <listener-class>
+	com.fets.ibedc.dw.jobSchedule.MyServletContextListener
+  </listener-class>
+  </listener>
+   <listener>
+    <listener-class>
+	        com.sun.xml.ws.transport.http.servlet.WSServletContextListener
+	    </listener-class>
+  </listener>
     <session-config>
     	<session-timeout>
     		360

@@ -1,26 +1,25 @@
 package com.fets.ibedc.dw.jersey.services;
 
-import javax.ws.rs.FormParam;
+
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Response;
 
 import com.fets.ibedc.dw.jersey.responses.ServiceResponse;
 import com.fets.ibedc.dw.service.ServicesImp;
+import com.fets.ibedc.dw.soap.services.IBEDCServiceI;
+import com.fets.mm.soap.services.FetsServiceI;
 
 
 @Path("/")
-public class FETSServices   {
+public class FETSServices  implements IBEDCServiceI  {
 	
 	
 	public FETSServices()
 	{}
 	 
 	
-	@POST
+	@GET
     @Produces("application/json")
 	@Path("ping")
     public ServiceResponse ping()

@@ -4,6 +4,8 @@ public class IBEDCService {
 
 	public void DoETL() {
 		
+		System.out.println("came here ");
+		
 		try {
 			
 			DataBaseService con  = new DataBaseService();

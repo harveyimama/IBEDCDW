@@ -5,13 +5,11 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Vector;
 
 import com.fets.ibedc.dw.jersey.responses.Data;
+import com.fets.ibedc.dw.jersey.responses.Value;
 import com.fets.ibedc.dw.util.Env;
-import com.miola.tms.dto.CashOfficeDto;
 
 
 public class DataBaseService {
@@ -79,8 +77,9 @@ public class DataBaseService {
 	
 	
 	
-	public Vector<Data> getData() {
-		Vector<Data> list = new Vector<Data>();
+	public Vector<Value> getData() {
+		Vector<Value> list = new Vector<Value>();
+		String last_data = "0";
 
 		try {
 			connectDB();
@@ -91,11 +90,21 @@ public class DataBaseService {
 
 			while (result.next()) {
 
-				Data e = new Data(result.getString(1), result.getString(2), result.getString(3), result.getString(4),
+				Value e = new Value(result.getString(1), result.getString(2), result.getString(3), result.getString(4),
 						result.getString(5), result.getString(6));
 				list.add(e);
+				
+				last_data = result.getString(1);
 
 			}
+			
+			stored_procedure = con.prepareCall("{call up_pull_sp (?)}");
+			stored_procedure.setString(1, last_data);
+			stored_procedure.execute();
+			
+			con.commit();
+			
+			
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			closeConnection();
@@ -113,11 +122,11 @@ public class DataBaseService {
 		try {
 			connectDB();
 
-			stored_procedure = con.prepareCall("{call close_data()}");
+			stored_procedure = con.prepareCall("{call close_data_sp()}");
 
 			stored_procedure.execute();
 
-			
+			con.commit();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			try {
@@ -168,10 +177,10 @@ public void saveLastId(int id) {
 		try {
 			connectDB();
 
-			stored_procedure = con.prepareCall("{call save_ibedc_id(?)}");
+			stored_procedure = con.prepareCall("{call save_ibedc_id_sp(?)}");
 			stored_procedure.setInt(1, id);
 			stored_procedure.execute();
-
+			con.commit();
 			
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -195,13 +204,13 @@ public void saveLastId(int id) {
 		try {
 			connectDB();
 
-			stored_procedure = con.prepareCall("{call save_ibedc_data(?)}");
+			stored_procedure = con.prepareCall("{call save_ibedc_data_sp(?)}");
 			stored_procedure.setInt(1, id);
 			stored_procedure.registerOutParameter(1, java.sql.Types.INTEGER);
 			stored_procedure.execute();
 			
 			id = stored_procedure.getInt(1);
-
+			con.commit();
 			
 		} catch (Exception ex) {
 			ex.printStackTrace();

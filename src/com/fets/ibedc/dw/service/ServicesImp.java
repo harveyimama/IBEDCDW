@@ -4,6 +4,7 @@ import java.util.Vector;
 
 import com.fets.ibedc.dw.jersey.responses.Data;
 import com.fets.ibedc.dw.jersey.responses.ServiceResponse;
+import com.fets.ibedc.dw.jersey.responses.Value;
 
 public class ServicesImp {
 
@@ -26,12 +27,16 @@ public ServiceResponse getData  ()
 	ServiceResponse resp = new ServiceResponse();
 	
 	try {
-		Vector<Data> d = new DataBaseService().getData();
+		Vector<Value> v = new DataBaseService().getData();
+		Data d = new Data();
+		
+		
 		
 		if( d != null )
 		{
-			if (d.size() > 0)
+			if (v.size() > 0)
 			{
+				d.setValue(v);
 				resp.setMessage("Success");
 				resp.setResponseCode(0);
 				resp.setSuccess(true);
@@ -71,13 +76,13 @@ public ServiceResponse closeData  ()
 	ServiceResponse resp = new ServiceResponse();
 	
 	try {
-	 new DataBaseService().closeData();
+	 
+		new DataBaseService().closeData();
 		
-	
 				resp.setMessage("Success");
 				resp.setResponseCode(0);
 				resp.setSuccess(true);
-				resp.setData(d);
+
 			
 	} catch (Exception e) {
 
